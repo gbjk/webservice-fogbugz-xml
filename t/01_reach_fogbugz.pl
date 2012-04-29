@@ -5,17 +5,32 @@ use Test::More qw/no_plan/;
 use WebService::Fogbugz::XML;
 use Term::ReadKey;
 
+my ($url, $user, $password);
 # Get login details
-say "Please supply Fogbugz URL:";
-my $url = ReadLine(0);
-say "Please supply your username:";
-my $user = ReadLine(0);
-say "Please supply your password:";
-ReadMode('noecho');
-my $password = ReadLine(0);
-ReadMode('normal');
+if (-r 'fb.config') {
+    use Config::General;
+    my $conf = new Config::General('fb.config');
+    my %conf = $conf ? $conf->getall : qw//;
+    ($url, $user, $password) = ($conf{url}, $conf{user}, $conf{password});
+    }
+else {
+    exit "Must supply config file 'fb.config'\n";
+    }
 
-die "Must supply login credentials\n" unless ($url && $user && $password);
+unless ($url) {
+    say "Please supply Fogbugz URL:";
+    $url = ReadLine(0);
+    }
+unless ($user) {
+    say "Please supply your username:";
+    $user = ReadLine(0);
+    }
+unless ($password) {
+    say "Please supply your password:";
+    ReadMode('noecho');
+    $password = ReadLine(0);
+    ReadMode('normal');
+    }
 
 # See if they work!
 my $fb = WebService::Fogbugz::XML->new({
