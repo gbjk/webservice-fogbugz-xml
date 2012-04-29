@@ -1,7 +1,7 @@
 package WebService::Fogbugz::XML;
 
 use Moose;
-use v5.12;
+use v5.10;
 
 with 'WebService::Fogbugz::XML::GetUrl';
 

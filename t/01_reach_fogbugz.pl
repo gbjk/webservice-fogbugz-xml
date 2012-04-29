@@ -1,4 +1,4 @@
-use v5.12;
+use v5.10;
 
 use lib './lib';
 use Test::More qw/no_plan/;

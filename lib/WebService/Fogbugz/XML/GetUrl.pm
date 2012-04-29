@@ -1,6 +1,6 @@
 package WebService::Fogbugz::XML::GetUrl;
 
-use v5.12;
+use v5.10;
 use Moose::Role;
 
 use Data::Dumper;
