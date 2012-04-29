@@ -20,15 +20,18 @@ else {
 unless ($url) {
     say "Please supply Fogbugz URL:";
     $url = ReadLine(0);
+    chomp $url;
     }
 unless ($email) {
     say "Please supply your email:";
     $email = ReadLine(0);
+    chomp $email;
     }
 unless ($password) {
     say "Please supply your password:";
     ReadMode('noecho');
     $password = ReadLine(0);
+    chomp $password;
     ReadMode('normal');
     }
 
