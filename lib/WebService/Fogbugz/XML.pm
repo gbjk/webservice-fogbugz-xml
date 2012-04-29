@@ -13,12 +13,12 @@ has 'url' => (
 has 'email' => (
     is       => 'ro',
     isa      => 'Str',
-    required => 1,
+    default  => '',
     );
 has 'password' => (
     is       => 'ro',
     isa      => 'Str',
-    required => 1,
+    default  => '',
     );
 has 'token' => (
     is  => 'rw',
@@ -38,7 +38,9 @@ sub BUILD {
 
 sub DEMOLISH {
     my $self = shift;
-    $self->logout;
+    # Don't want it to keep wiping out tokens whilst I'm testing.
+    # Maybe put this back later, maybe stop bothering...
+    #$self->logout;
     }
 
 sub logout {
@@ -46,6 +48,18 @@ sub logout {
 
     my $dom = $self->get_url(logoff => { });
     return 1;
+    }
+
+sub get_case {
+    my ($self, $number) = @_;
+
+    use WebService::Fogbugz::XML::Case;
+    my $case = WebService::Fogbugz::XML::Case->new({
+        url     => $self->url,
+        token   => $self->token,
+        number  => $number,
+        });
+    return $case;
     }
 
 no Moose;
