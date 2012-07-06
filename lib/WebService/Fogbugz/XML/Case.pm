@@ -18,6 +18,10 @@ has number => (
     isa       => 'Int',
     required  => 1,
     );
+has parent => (
+    is        => 'rw',
+    isa       => 'Int',
+    );
 has title => (
     is        => 'rw',
     isa       => 'Str',
@@ -65,13 +69,14 @@ sub get {
 
     my $self = $class->new(number => $number);
 
-    my $case_cols = 'tags,sTitle,sStatus,sCategory,hrsOrigEst,hrsCurrEst,hrsElapsed,plugin_customfields_at_fogcreek_com_rto31,plugin_customfields_at_fogcreek_com_bugzillaa62,plugin_customfields_at_fogcreek_com_clients15';
+    my $case_cols = 'tags,sTitle,sStatus,sCategory,hrsOrigEst,hrsCurrEst,hrsElapsed,plugin_customfields_at_fogcreek_com_rto31,plugin_customfields_at_fogcreek_com_bugzillaa62,plugin_customfields_at_fogcreek_com_clients15,ixBugParent';
 
     my $dom = $self->get_url(search => {
         q       => $self->number,
         cols    => $case_cols,
         });
 
+    $self->parent($dom->findvalue('//ixBugParent'));
     $self->tags($dom->findvalue('//tag'));
     $self->title($dom->findvalue('//sTitle'));
     $self->type($dom->findvalue('//sCategory'));
