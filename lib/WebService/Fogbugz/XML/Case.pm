@@ -106,6 +106,16 @@ sub get {
     return $self;
     }
 
+sub start_work {
+    my ($self) = @_;
+
+    my $resp = $self->get_url(startWork => {
+        ixBug   => $self->number,
+        });
+
+    return;
+    }
+
 __PACKAGE__->meta->make_immutable;
 
 1;
