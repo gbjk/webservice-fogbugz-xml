@@ -11,7 +11,13 @@ use XML::LibXML;
 use namespace::autoclean;
 
 
-has config_filename => (is => 'ro', isa => 'Str', lazy => 1, default => sub { glob("~/.fb.conf") });
+has config_filename => (
+    is => 'ro',
+    isa => 'Str',
+    lazy => 1,
+    default => sub { glob("~/.fb.conf") }
+    );
+
 has config => (
     isa         => 'HashRef',
     traits      => ['Hash'],
