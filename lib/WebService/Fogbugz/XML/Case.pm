@@ -75,11 +75,12 @@ has events => (
         },
     );
 
-# Class method
 sub get {
-    my ($class, $number) = @_;
+    my ($self, $number) = @_;
 
-    my $self = $class->new(number => $number);
+    unless (ref $self){
+        $self = $self->new(number => $number);
+        }
 
     my $case_cols = 'tags,sTitle,sStatus,sCategory,hrsOrigEst,hrsCurrEst,hrsElapsed,plugin_customfields_at_fogcreek_com_rto31,plugin_customfields_at_fogcreek_com_bugzillaa62,plugin_customfields_at_fogcreek_com_clients15,ixBugParent,events';
 

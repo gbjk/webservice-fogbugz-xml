@@ -1,4 +1,5 @@
 package WebService::Fogbugz::XML;
+# ABSTRACT: API to Fogbugz XML WebService
 
 use Moose;
 use v5.10;
@@ -106,6 +107,8 @@ sub get_case {
         service => $self,
         number  => $number,
         });
+
+    $case->get;
 
     return $case;
     }
