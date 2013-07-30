@@ -18,6 +18,12 @@ has config_filename => (
     lazy => 1,
     default => sub { (glob "~/.fb.conf")[0] } #Glob returns iterator if called in scalar context
     );
+has token_filename => (
+    is => 'ro',
+    isa => 'Str',
+    lazy => 1,
+    default => sub { (glob "~/.fb_auth_token")[0] }
+    );
 
 has config => (
     isa         => 'HashRef',
@@ -69,9 +75,8 @@ sub _build_token {
     my ($self) = @_;
 
     # Glob returns iterator unless called in scalar context
-    my $token_file = (glob "~/.fb_auth_token")[0];
-    if (-r $token_file) {
-        open (my $file, '<', $token_file);
+    if (-r $self->token_filename) {
+        open (my $file, '<', $self->token_filename);
         chomp(my $token = <$file>);
         return $token;
         }
