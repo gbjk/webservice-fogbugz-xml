@@ -2,7 +2,7 @@ use v5.10;
 
 use lib './lib';
 use Test::More qw/no_plan/;
-use WebService::Fogbugz::XML;
+use WebService::FogBugz::XML;
 use Term::ReadKey;
 
 my ($url, $email, $password);
@@ -36,7 +36,7 @@ unless ($password) {
     }
 
 # See if they work!
-my $fb = WebService::Fogbugz::XML->new({
+my $fb = WebService::FogBugz::XML->new({
     url      => $url,
     email    => $email,
     password => $password,

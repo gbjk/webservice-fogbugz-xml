@@ -1,4 +1,4 @@
-package WebService::Fogbugz::XML::Event;
+package WebService::FogBugz::XML::Event;
 
 use Moose;
 use v5.10;

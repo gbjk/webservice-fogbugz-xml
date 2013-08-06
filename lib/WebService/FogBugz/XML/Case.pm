@@ -1,19 +1,19 @@
-package WebService::Fogbugz::XML::Case;
+package WebService::FogBugz::XML::Case;
 
 use Moose;
 use v5.10;
 
 use namespace::autoclean;
 
-use WebService::Fogbugz::XML::Event;
+use WebService::FogBugz::XML::Event;
 use Data::Dumper;
 
 has service => (
-    isa         => 'WebService::Fogbugz::XML',
+    isa         => 'WebService::FogBugz::XML',
     is          => 'ro',
     handles     => [qw/get_url/],
     lazy        => 1,
-    default     => sub { WebService::Fogbugz::XML->new },
+    default     => sub { WebService::FogBugz::XML->new },
     );
 
 has number => (
@@ -66,7 +66,7 @@ has bz => (
     isa       => 'Str',
     );
 has events => (
-    isa       => 'ArrayRef[WebService::Fogbugz::XML::Event]',
+    isa       => 'ArrayRef[WebService::FogBugz::XML::Event]',
     traits    => ['Array'],
     default   => sub { [] },
     handles   => {
@@ -100,7 +100,7 @@ sub get {
     $self->rt($dom->findvalue('//plugin_customfields_at_fogcreek_com_rto31'));
     $self->bz($dom->findvalue('//plugin_customfields_at_fogcreek_com_bugzillaa62'));
     foreach my $event_dom ($dom->findnodes('//events/event')){
-        my $event = WebService::Fogbugz::XML::Event->from_xml($event_dom);
+        my $event = WebService::FogBugz::XML::Event->from_xml($event_dom);
         $self->add_event($event);
         }
 

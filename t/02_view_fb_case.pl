@@ -2,7 +2,7 @@ use v5.10;
 
 use lib './lib';
 use Test::More qw/no_plan/;
-use WebService::Fogbugz::XML;
+use WebService::FogBugz::XML;
 
 # Get login token
 my $token;
@@ -26,7 +26,7 @@ if (-r 'fb.config') {
     }
 
 # Get our FB object
-my $fb = WebService::Fogbugz::XML->new({
+my $fb = WebService::FogBugz::XML->new({
     token   => $token,
     url     => $url,
     });

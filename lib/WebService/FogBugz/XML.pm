@@ -1,4 +1,4 @@
-package WebService::Fogbugz::XML;
+package WebService::FogBugz::XML;
 # ABSTRACT: API to Fogbugz XML WebService
 
 use Moose;
@@ -7,7 +7,7 @@ use v5.10;
 use Config::Any;
 use HTTP::Request;
 use LWP::UserAgent;
-use WebService::Fogbugz::XML::Case;
+use WebService::FogBugz::XML::Case;
 use XML::LibXML;
 use namespace::autoclean;
 
@@ -108,7 +108,7 @@ sub logout {
 sub get_case {
     my ($self, $number) = @_;
 
-    my $case = WebService::Fogbugz::XML::Case->new({
+    my $case = WebService::FogBugz::XML::Case->new({
         service => $self,
         number  => $number,
         });
