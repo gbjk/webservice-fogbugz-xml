@@ -1,5 +1,4 @@
 package WebService::FogBugz::XML;
-# ABSTRACT: API to Fogbugz XML WebService
 
 use Moose;
 use v5.10;
