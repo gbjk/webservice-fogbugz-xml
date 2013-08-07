@@ -12,7 +12,7 @@ use LWP::UserAgent;
 use WebService::FogBugz::XML::Case;
 use XML::LibXML;
 
-our $VERSION = '1.0000';
+our $VERSION = '1.0001';
 
 use namespace::autoclean;
 

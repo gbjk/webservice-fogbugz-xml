@@ -1,3 +1,8 @@
-1.000 - 2013-08-06
+1.0001 - 2013-08-07
+ - Added dependency list
+ - Added Repository to meta
+ - Fix typos in POD
+
+1.0000 - 2013-08-06
  - Rename namespace to match existing WebService::FogBugz dist
  - Add prompting support
