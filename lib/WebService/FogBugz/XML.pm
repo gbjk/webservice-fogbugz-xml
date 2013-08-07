@@ -12,6 +12,8 @@ use LWP::UserAgent;
 use WebService::FogBugz::XML::Case;
 use XML::LibXML;
 
+our $VERSION = '1.0000';
+
 use namespace::autoclean;
 
 has config_filename => (
