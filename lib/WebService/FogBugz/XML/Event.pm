@@ -22,3 +22,27 @@ sub from_xml {
 __PACKAGE__->meta->make_immutable;
 
 1;
+
+=head1 NAME
+
+WebService::FogBugz::XML::Event
+
+=head1 ATTRIBUTES
+
+=head2 type
+
+Type of the event.
+
+=head2 text
+
+Text of the event.
+
+=head1 TODO
+
+ Event type enumeration.
+
+=head1 AUTHORS, COPYRIGHT & LICENSE
+
+See L<WebService::FogBugz::XML>.
+
+=cut

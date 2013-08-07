@@ -176,6 +176,7 @@ sub get_url {
         foreach my $error ($errors->get_nodelist){
             if ($tries < 1 && $error->getAttribute('code') eq 3){
                 # Error code 3 is not logged on. Retry login once.
+                $self->logout;
                 $self->logon;
                 return $self->get_url($cmd, $args, 1);
                 }
@@ -189,3 +190,120 @@ sub get_url {
 __PACKAGE__->meta->make_immutable;
 
 1;
+
+=head1 NAME
+
+WebService::FogBugz::XML
+
+=head1 SYNOPSIS
+
+ use WebService::FogBugz::XML;
+
+ # Config generally read from ~/.fb.conf
+ my $fb     = WebService::FogBugz::XML->new;
+
+ my $case   = $fb->get_case(1234);
+
+=head1 DESCRIPTION
+
+WebService::FogBugz::XML provides an OO interface to the FogBugz XML API.
+You can use this to search for cases, change what you're working on, etc.
+It's particularly useful to build external reporting on development activity.
+
+Documentation for the API itself is here:
+L<FogBugz XML API Doucmentation|http://fogbugz.stackexchange.com/fogbugz-xml-api>
+
+=head1 CONFIGURATION
+
+Configureation is expected to be found in ~/.fb.conf.
+If it's not there, you'll be prompted for url, email and password.
+The password should not be stored in the file, since it's only used to generate an auth_token.
+
+Example config file:
+ url = https://www.mysite.com/fogbugz/api.asp
+ email = my@email.com
+
+The URL should probably end in api.asp.
+
+An auth token is stored in ~/.fb_auth_token.
+This is a persistent login key. Once this exists, neither email nor password are required
+again.
+
+There are attributes available for email, password and url on the object itself,
+but it's a bad pattern to hard code a password ever.
+
+=head1 ATTRIBUTES
+
+=head2 config_filename
+
+Where to find the configuration file.
+
+Default: ~/.fb.conf
+
+=head2 token_filename
+
+Where to find and store the auth token file.
+
+Default: ~/.fb_auth_token
+
+=head2 url
+
+The URL to the fogbugz API. Should include the protocol, and the full path to the api.
+ e.g. https:://www.mysite.com/fogbugz/api.asp
+
+=head2 email
+
+The email address to logon to Fogbugz with
+
+=head2 password
+
+The password address to logon to Fogbugz with
+
+=head2 token
+
+The auth token to use when talking to fogbugz
+
+=head1 METHODS
+
+=head2 get_case ($number)
+
+Fetches a case from fogbugz.
+
+Returns a L<WebService::FogBugz::XML::Case> object.
+
+=head1 INTERNALS
+
+=head2 logon
+
+Called when there's no token present.
+You shouldn't ever need to call this.
+
+=head2 Logout
+
+Log out of the fogbugz service.
+
+=head2 get_url ($cmd, $args)
+
+Retrieves an arbitrary command. Accepts a hashref of arguments.
+
+=head1 TODO
+
+ Many more methods to wrap up for convenience.
+
+=head1 AUTHOR
+
+gbjk: Gareth Kirwan <gbjk@thermeon.com>
+
+=head1 CONTRIBUTIORS
+
+djh:  Dominic Humphries <djh@thermeon.com>
+
+=head1 COPYRIGHT
+
+2012 Thermeon Worldwide PLC
+
+=head1 LICENSE
+
+This library is free software. You can redistribute it and/or modify it under the same terms as Perl itself.
+
+=cut

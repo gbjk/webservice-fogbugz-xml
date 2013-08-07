@@ -29,10 +29,6 @@ has title => (
     is        => 'rw',
     isa       => 'Str',
     );
-has token => (
-    is  => 'rw',
-    isa => 'Str',
-    );
 has tags => (
     is        => 'rw',
     isa       => 'Str',
@@ -120,3 +116,81 @@ sub start_work {
 __PACKAGE__->meta->make_immutable;
 
 1;
+
+=head1 NAME
+
+WebService::FogBugz::XML::Case
+
+=head1 ATTRIBUTES
+
+=head2 service
+
+The WebService::FogBugz::XML service used to talk to fogbugz
+
+Default: WebService::FogBugz::XML->new()
+
+=head2 FogBugz ATTRIBUTES
+
+The following attributes map directly to the API attributes.
+
+=over
+
+=item number
+
+=item parent
+
+=item title
+
+=item tags
+
+=item type
+
+=item status
+
+=item total_time
+
+=item orig_est
+
+=item curr_est
+
+=item events
+
+Array of L<WebService::FogBugz::XML::Event> objects for this case
+
+=back
+
+=head2 Custom ATTRIBUTES
+
+Some custom attributes currently supported. This needs abstracting to be generically supportable.
+
+=over
+
+=item rt
+
+RequestTracker reference number
+
+=item bz
+
+Bugzilla reference number
+
+=back
+
+=head1 METHODS
+
+=head2 get ($case_number)
+
+Retrieves a case by case number.
+
+=head2 start_work
+
+Starts work on this case.
+
+=head1 TODO
+
+ stop_work
+
+=head1 AUTHORS, COPYRIGHT & LICENSE
+
+See L<WebService::FogBugz::XML>.
+
+=cut
