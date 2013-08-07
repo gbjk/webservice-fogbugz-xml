@@ -228,7 +228,7 @@ L<FogBugz XML API Doucmentation|http://fogbugz.stackexchange.com/fogbugz-xml-api
 
 =head1 CONFIGURATION
 
-Configureation is expected to be found in ~/.fb.conf.
+Configuration is expected to be found in ~/.fb.conf.
 If it's not there, you'll be prompted for url, email and password.
 The password should not be stored in the file, since it's only used to generate an auth_token.
 
