@@ -3,7 +3,9 @@ package WebService::FogBugz::XML;
 use Moose;
 use v5.10;
 
+use common::sense;
 use Config::Any;
+use Data::Dumper;
 use HTTP::Request;
 use IO::Prompt;
 use LWP::UserAgent;
@@ -36,8 +38,7 @@ has config => (
 has url => (
     is       => 'ro',
     isa      => 'Str',
-    lazy     => 1,
-    default  => sub { shift->config('url') },
+    lazy_build => 1,
     );
 has email => (
     is       => 'ro',
@@ -58,6 +59,11 @@ has token => (
 sub _build_config {
     my ($self) = @_;
 
+    unless (-r $self->config_filename){
+        say STDERR "[WARNING] Could not read config file: ".$self->config_filename;
+        return {};
+        }
+
     my $cfg = Config::Any->load_files({
         files   => [$self->config_filename],
         use_ext => 1,
@@ -70,7 +76,6 @@ sub _build_config {
 
     return \%config;
     }
-
 sub _build_token {
     my ($self) = @_;
 
@@ -85,11 +90,27 @@ sub _build_token {
 
     return $token;
     }
+sub _build_url {
+    my $url = shift->config('url');
+    unless ($url){
+        $url = "".prompt "Fogbugz API URL: ", '-t';
+        }
+
+    if ($url !~ /api.asp/){
+        say STDERR "[WARNING] Fogbugz URL doesn't end with /api.asp. That doesn't seem right!";
+        }
+    return $url;
+    }
 sub _build_email {
+    if (my $email = shift->config('email')){
+        return $email;
+        }
     return "".prompt "Fogbugz Email address: ", '-t';
     }
-
 sub _build_password {
+    if (my $password = shift->config('password')){
+        return $password;
+        }
     return "".prompt "Fogbugz Password: ", -te => '*';
     }
 
@@ -127,7 +148,7 @@ sub get_case {
     }
 
 sub get_url {
-    my ($self, $cmd, $args) = @_;
+    my ($self, $cmd, $args, $tries) = @_;
 
     my $ua = LWP::UserAgent->new();
 
@@ -144,12 +165,25 @@ sub get_url {
     my $resp = $ua->request($req);
 
     unless ($resp->is_success){
-        say STDERR "Error talking to Fogbugz\n".$resp->_content;
+        say STDERR "Error talking to Fogbugz\n".$resp->content;
         }
 
     my $dom = XML::LibXML->load_xml(string => $resp->content);
 
-    return $dom->documentElement;
+    my $doc = $dom->documentElement;
+
+    if (my $errors = $doc->find('/response/error')){
+        foreach my $error ($errors->get_nodelist){
+            if ($tries < 1 && $error->getAttribute('code') eq 3){
+                # Error code 3 is not logged on. Retry login once.
+                $self->logon;
+                return $self->get_url($cmd, $args, 1);
+                }
+            say STDERR "[ERROR] ".$error->textContent;
+            }
+        }
+
+    return $doc;
     }
 
 __PACKAGE__->meta->make_immutable;

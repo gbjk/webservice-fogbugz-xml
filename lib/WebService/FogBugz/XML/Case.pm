@@ -23,7 +23,7 @@ has number => (
     );
 has parent => (
     is        => 'rw',
-    isa       => 'Int',
+    isa       => 'Int|Str',
     );
 has title => (
     is        => 'rw',
