@@ -126,6 +126,12 @@ sub logon {
 
     my $token = $dom->findvalue('//token');
 
+    open(my $token_file, ">", $self->token_filename) || die "Cannot open ".$self->token_filename;
+
+    say $token_file $token;
+
+    $self->token( $token );
+
     return $token;
     }
 
@@ -133,6 +139,11 @@ sub logout {
     my $self = shift;
 
     my $dom = $self->get_url(logoff => { });
+
+    if (-r $self->token_filename){
+        unlink $self->token_filename;
+        }
+
     return 1;
     }
 

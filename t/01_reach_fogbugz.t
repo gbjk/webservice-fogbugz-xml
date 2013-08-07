@@ -1,7 +1,7 @@
 use v5.10;
 
 use lib './lib';
-use Test::More tests => 3;
+use Test::More tests => 2;
 use WebService::FogBugz::XML;
 use Term::ReadKey;
 
@@ -11,4 +11,3 @@ my $fb = WebService::FogBugz::XML->new();
 
 ok($fb, 'Got FB object');
 ok($fb->token, 'Returns valid token '.$fb->token);
-ok($fb->logout, 'Successfully logged out');
