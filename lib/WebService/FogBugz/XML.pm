@@ -233,8 +233,9 @@ If it's not there, you'll be prompted for url, email and password.
 The password should not be stored in the file, since it's only used to generate an auth_token.
 
 Example config file:
- url = https://www.mysite.com/fogbugz/api.asp
- email = my@email.com
+
+    url = https://www.mysite.com/fogbugz/api.asp
+    email = my@email.com
 
 The URL should probably end in api.asp.
 
