@@ -1,11 +1,17 @@
 use v5.10;
 
 use lib './lib';
-use Test::More tests => 3;
-use WebService::FogBugz::XML;
 
-# Get our FB object
+use WebService::FogBugz::XML;
 my $fb = WebService::FogBugz::XML->new();
+
+use Test::More;
+if ($ENV{AUTOMATED_TESTING} && !-e $fb->config_filename){
+    plan skip_all => "No fogbugz config file, and no user to provide config";
+}
+else {
+    plan tests => 3;
+}
 
 # Lots of groundwork done! This probably needs a lot of abstracting...
 # Now let's get the actual testing done...

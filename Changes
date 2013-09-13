@@ -1,3 +1,6 @@
+1.0002 - 2013-09-12
+ - Prevent tests running under smoke test from prompting.
+
 1.0001 - 2013-08-07
  - Added dependency list
  - Added Repository to meta
