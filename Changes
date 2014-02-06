@@ -1,3 +1,6 @@
+{{$NEXT}}
+ - Managed the changes using Dist::Zilla
+
 1.0002 - 2013-09-12
  - Prevent tests running under smoke test from prompting.
 
