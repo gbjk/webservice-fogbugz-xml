@@ -1,3 +1,7 @@
+NEXT
+ - Retrieve all custom fields
+ - Added backlog to custom fields
+
 1.0002 - 2013-09-12
  - Prevent tests running under smoke test from prompting.
 

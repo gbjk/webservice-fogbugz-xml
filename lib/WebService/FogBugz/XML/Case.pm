@@ -61,6 +61,10 @@ has bz => (
     is        => 'rw',
     isa       => 'Str',
     );
+has backlog => (
+    is        => 'rw',
+    isa       => 'Num',
+    );
 has events => (
     isa       => 'ArrayRef[WebService::FogBugz::XML::Event]',
     traits    => ['Array'],
@@ -78,7 +82,7 @@ sub get {
         $self = $self->new(number => $number);
         }
 
-    my $case_cols = 'tags,sTitle,sStatus,sCategory,hrsOrigEst,hrsCurrEst,hrsElapsed,plugin_customfields_at_fogcreek_com_rto31,plugin_customfields_at_fogcreek_com_bugzillaa62,plugin_customfields_at_fogcreek_com_clients15,ixBugParent,events';
+    my $case_cols = 'tags,sTitle,sStatus,sCategory,hrsOrigEst,hrsCurrEst,hrsElapsed,plugin_customfields_at_fogcreek_com_rto32,ixBugParent,events,plugin_customfields';
 
     my $dom = $self->get_url(search => {
         q       => $self->number,
@@ -95,6 +99,7 @@ sub get {
     $self->curr_est($dom->findvalue('//hrsCurrEst'));
     $self->rt($dom->findvalue('//plugin_customfields_at_fogcreek_com_rto31'));
     $self->bz($dom->findvalue('//plugin_customfields_at_fogcreek_com_bugzillaa62'));
+    $self->backlog($dom->findvalue('//plugin_customfields_at_fogcreek_com_xbacklogxordera08'));
     foreach my $event_dom ($dom->findnodes('//events/event')){
         my $event = WebService::FogBugz::XML::Event->from_xml($event_dom);
         $self->add_event($event);
