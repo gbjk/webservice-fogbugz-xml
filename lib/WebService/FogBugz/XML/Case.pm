@@ -7,6 +7,7 @@ use namespace::autoclean;
 
 use WebService::FogBugz::XML::Event;
 use Data::Dumper;
+use DDP;
 
 has service => (
     isa         => 'WebService::FogBugz::XML',
@@ -114,6 +115,18 @@ sub get {
     return $self;
     }
 
+sub update {
+    my ($self) = @_;
+
+    my $dom = $self->get_url(edit => {
+        ixBug   => $self->number,
+        plugin_customfields_at_fogcreek_com_trelloxidp8d    => $self->trello_id,
+        plugin_customfields_at_fogcreek_com_trelloxorderb8e => $self->trello_order,
+        });
+
+    return;
+    }
+
 sub start_work {
     my ($self) = @_;
 
@@ -199,6 +212,8 @@ Starts work on this case.
 =head1 TODO
 
  stop_work
+
+ MASSIVE caveat - update only writes trello custom fields
 
 =head1 AUTHORS, COPYRIGHT & LICENSE
 
