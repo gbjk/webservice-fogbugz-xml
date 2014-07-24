@@ -61,7 +61,11 @@ has bz => (
     is        => 'rw',
     isa       => 'Str',
     );
-has backlog => (
+has trello_id => (
+    is        => 'rw',
+    isa       => 'Str',
+    );
+has trello_order => (
     is        => 'rw',
     isa       => 'Num',
     );
@@ -99,7 +103,9 @@ sub get {
     $self->curr_est($dom->findvalue('//hrsCurrEst'));
     $self->rt($dom->findvalue('//plugin_customfields_at_fogcreek_com_rto31'));
     $self->bz($dom->findvalue('//plugin_customfields_at_fogcreek_com_bugzillaa62'));
-    $self->backlog($dom->findvalue('//plugin_customfields_at_fogcreek_com_xbacklogxordera08'));
+    $self->trello_id($dom->findvalue('//plugin_customfields_at_fogcreek_com_trelloxidp8d'));
+    $self->trello_order($dom->findvalue('//plugin_customfields_at_fogcreek_com_trelloxorderb8e'));
+
     foreach my $event_dom ($dom->findnodes('//events/event')){
         my $event = WebService::FogBugz::XML::Event->from_xml($event_dom);
         $self->add_event($event);

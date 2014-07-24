@@ -1,0 +1,3 @@
+- cpanfile
+- reqs Config::General, lwp::protocol::https, URL::Encode
+- custom fields hardcoded

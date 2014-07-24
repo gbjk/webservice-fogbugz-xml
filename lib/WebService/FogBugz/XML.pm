@@ -11,6 +11,7 @@ use IO::Prompt;
 use LWP::UserAgent;
 use WebService::FogBugz::XML::Case;
 use XML::LibXML;
+use URL::Encode qw/url_encode/;
 
 our $VERSION = '1.0002';
 
@@ -158,6 +159,19 @@ sub get_case {
     $case->get;
 
     return $case;
+    }
+
+sub search {
+    my ($self, %axis) = @_;
+
+    my $case_cols = 'tags,sTitle,sStatus,sCategory,hrsOrigEst,hrsCurrEst,hrsElapsed,ixBugParent,events,plugin_customfields';
+
+    my $dom = $self->get_url(search => {
+        q       => url_encode(join " ", map { my $key = $_ =~ s/_/x/rg;"$key:$axis{$_}" } keys %axis),
+        cols    => $case_cols,
+        });
+
+    return;
     }
 
 sub get_url {
