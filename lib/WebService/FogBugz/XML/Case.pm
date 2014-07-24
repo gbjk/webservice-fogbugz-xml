@@ -63,11 +63,11 @@ has bz => (
     );
 has trello_id => (
     is        => 'rw',
-    isa       => 'Maybe[Str]',
+    isa       => 'Str',
     );
 has trello_order => (
     is        => 'rw',
-    isa       => 'Maybe[Num]',
+    isa       => 'Str',
     );
 has events => (
     isa       => 'ArrayRef[WebService::FogBugz::XML::Event]',
