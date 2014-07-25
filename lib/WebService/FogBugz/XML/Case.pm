@@ -94,6 +94,22 @@ sub get {
         cols    => $case_cols,
         });
 
+    $self->populate_fields($dom);
+    return $self;
+    }
+
+sub new_from_dom {
+    my ($class, $dom) =@_;
+
+    my $num = $dom->getAttribute('ixBug');
+    my $self = $class->new(number => $num);
+    $self->populate_fields($dom);
+    return $self;
+    }
+
+sub populate_fields {
+    my ($self, $dom) = @_;
+
     $self->parent($dom->findvalue('//ixBugParent'));
     $self->tags($dom->findvalue('//tag'));
     $self->title($dom->findvalue('//sTitle'));
@@ -111,8 +127,6 @@ sub get {
         my $event = WebService::FogBugz::XML::Event->from_xml($event_dom);
         $self->add_event($event);
         }
-
-    return $self;
     }
 
 sub update {

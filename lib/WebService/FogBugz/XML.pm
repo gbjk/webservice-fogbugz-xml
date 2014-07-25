@@ -171,7 +171,8 @@ sub search {
         cols    => $case_cols,
         });
 
-    return;
+    my @case_elems = $dom->getElementsByTagName('case');
+    return map { WebService::FogBugz::XML::Case->new_from_dom($_) } @case_elems;
     }
 
 sub get_url {
