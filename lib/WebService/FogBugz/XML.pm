@@ -13,8 +13,6 @@ use WebService::FogBugz::XML::Case;
 use XML::LibXML;
 use URL::Encode qw/url_encode/;
 
-our $VERSION = '1.0002';
-
 use namespace::autoclean;
 
 has config_filename => (
