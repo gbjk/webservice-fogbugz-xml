@@ -43,6 +43,11 @@ has url => (
     isa      => 'Str',
     lazy_build => 1,
     );
+has site_url => (
+    is       => 'ro',
+    isa      => 'Str',
+    lazy_build => 1,
+    );
 has email => (
     is       => 'ro',
     isa      => 'Str',
@@ -101,6 +106,17 @@ sub _build_url {
 
     if ($url !~ /api.asp/){
         say STDERR "[WARNING] Fogbugz URL doesn't end with /api.asp. That doesn't seem right!";
+        }
+    return $url;
+    }
+sub _build_site_url {
+    my $url = shift->config('site_url');
+    unless ($url){
+        $url = "".prompt "Fogbugz Site URL: ", '-t';
+        }
+
+    if ($url !~ m#/f/$#) {
+        say STDERR "[WARNING] Fogbugz URL doesn't end with /f/. That doesn't seem right!";
         }
     return $url;
     }

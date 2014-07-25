@@ -12,7 +12,7 @@ use DDP;
 has service => (
     isa         => 'WebService::FogBugz::XML',
     is          => 'ro',
-    handles     => [qw/get_url/],
+    handles     => [qw/get_url site_url/],
     lazy        => 1,
     default     => sub { WebService::FogBugz::XML->new },
     );
@@ -79,6 +79,12 @@ has events => (
         events       => 'elements',
         },
     );
+
+sub url {
+    my ($self) = @_;
+
+    return $self->site_url . 'cases/' . $self->number . '/';
+    }
 
 sub get {
     my ($self, $number) = @_;
