@@ -13,8 +13,6 @@ use WebService::FogBugz::XML::Case;
 use XML::LibXML;
 use URL::Encode qw/url_encode/;
 
-our $VERSION = '1.0002';
-
 use namespace::autoclean;
 
 has config_filename => (
@@ -39,6 +37,11 @@ has config => (
         },
     );
 has url => (
+    is       => 'ro',
+    isa      => 'Str',
+    lazy_build => 1,
+    );
+has site_url => (
     is       => 'ro',
     isa      => 'Str',
     lazy_build => 1,
@@ -101,6 +104,17 @@ sub _build_url {
 
     if ($url !~ /api.asp/){
         say STDERR "[WARNING] Fogbugz URL doesn't end with /api.asp. That doesn't seem right!";
+        }
+    return $url;
+    }
+sub _build_site_url {
+    my $url = shift->config('site_url');
+    unless ($url){
+        $url = "".prompt "Fogbugz Site URL: ", '-t';
+        }
+
+    if ($url !~ m#/f/$#) {
+        say STDERR "[WARNING] Fogbugz URL doesn't end with /f/. That doesn't seem right!";
         }
     return $url;
     }
@@ -171,7 +185,8 @@ sub search {
         cols    => $case_cols,
         });
 
-    return;
+    my @case_elems = $dom->getElementsByTagName('case');
+    return map { WebService::FogBugz::XML::Case->new_from_dom($_) } @case_elems;
     }
 
 sub get_url {

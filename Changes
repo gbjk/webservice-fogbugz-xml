@@ -1,8 +1,9 @@
-NEXT
+1.0100 - 2014-08-25
  - Retrieve all custom fields
  - Added trello fields to custom fields
  - Added search facility
  - Added case update
+ - Added scout last Occcurence field
 
 1.0002 - 2013-09-12
  - Prevent tests running under smoke test from prompting.

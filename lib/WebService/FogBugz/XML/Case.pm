@@ -6,13 +6,15 @@ use v5.10;
 use namespace::autoclean;
 
 use WebService::FogBugz::XML::Event;
+use DateTime;
+use DateTime::Format::Strptime;
 use Data::Dumper;
 use DDP;
 
 has service => (
     isa         => 'WebService::FogBugz::XML',
     is          => 'ro',
-    handles     => [qw/get_url/],
+    handles     => [qw/get_url site_url/],
     lazy        => 1,
     default     => sub { WebService::FogBugz::XML->new },
     );
@@ -70,6 +72,14 @@ has trello_order => (
     is        => 'rw',
     isa       => 'Str',
     );
+has trello_list => (
+    is        => 'rw',
+    isa       => 'Str',
+    );
+has last_scout_occurrence => (
+    is        => 'rw',
+    isa       => 'Maybe[DateTime]',
+    );
 has events => (
     isa       => 'ArrayRef[WebService::FogBugz::XML::Event]',
     traits    => ['Array'],
@@ -80,6 +90,12 @@ has events => (
         },
     );
 
+sub url {
+    my ($self) = @_;
+
+    return $self->site_url . 'cases/' . $self->number . '/';
+    }
+
 sub get {
     my ($self, $number) = @_;
 
@@ -87,12 +103,28 @@ sub get {
         $self = $self->new(number => $number);
         }
 
-    my $case_cols = 'tags,sTitle,sStatus,sCategory,hrsOrigEst,hrsCurrEst,hrsElapsed,plugin_customfields_at_fogcreek_com_rto32,ixBugParent,events,plugin_customfields';
+    my $case_cols = 'tags,sTitle,sStatus,sCategory,hrsOrigEst,hrsCurrEst,hrsElapsed,plugin_customfields_at_fogcreek_com_rto32,ixBugParent,events,plugin_customfields,dtLastOccurrence';
 
     my $dom = $self->get_url(search => {
         q       => $self->number,
         cols    => $case_cols,
         });
+
+    $self->populate_fields($dom);
+    return $self;
+    }
+
+sub new_from_dom {
+    my ($class, $dom) =@_;
+
+    my $num = $dom->getAttribute('ixBug');
+    my $self = $class->new(number => $num);
+    $self->populate_fields($dom);
+    return $self;
+    }
+
+sub populate_fields {
+    my ($self, $dom) = @_;
 
     $self->parent($dom->findvalue('//ixBugParent'));
     $self->tags($dom->findvalue('//tag'));
@@ -106,13 +138,22 @@ sub get {
     $self->bz($dom->findvalue('//plugin_customfields_at_fogcreek_com_bugzillaa62'));
     $self->trello_id($dom->findvalue('//plugin_customfields_at_fogcreek_com_trelloxidp8d'));
     $self->trello_order($dom->findvalue('//plugin_customfields_at_fogcreek_com_trelloxorderb8e'));
+    $self->trello_list($dom->findvalue('//plugin_customfields_at_fogcreek_com_trelloxlistt7f'));
+
+    if (my $last_occurrence = $dom->findvalue('//dtLastOccurrence')){
+        state $date_parser = DateTime::Format::Strptime->new(pattern => "%FT%H:%M:%SZ");
+        if (my $date = $date_parser->parse_datetime( $last_occurrence )){
+            $self->last_scout_occurrence( $date );
+            }
+        else {
+            warn "Couldn't parse date time $last_occurrence";
+            }
+        }
 
     foreach my $event_dom ($dom->findnodes('//events/event')){
         my $event = WebService::FogBugz::XML::Event->from_xml($event_dom);
         $self->add_event($event);
         }
-
-    return $self;
     }
 
 sub update {
@@ -122,6 +163,18 @@ sub update {
         ixBug   => $self->number,
         plugin_customfields_at_fogcreek_com_trelloxidp8d    => $self->trello_id,
         plugin_customfields_at_fogcreek_com_trelloxorderb8e => $self->trello_order,
+        plugin_customfields_at_fogcreek_com_trelloxlistt7f  => $self->trello_list,
+        });
+
+    return;
+    }
+
+sub add_comment {
+    my ($self, $comment) = @_;
+
+    my $dom = $self->get_url(edit => {
+        ixBug   => $self->number,
+        sEvent  => $comment,
         });
 
     return;
