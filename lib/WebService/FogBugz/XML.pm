@@ -107,14 +107,16 @@ sub _build_base_url {
         $url = "".prompt "Fogbugz URL: ", '-t';
         }
 
+    # Support legacy config files which have the url as the api endpoint.
+    $url =~ s/api\.asp$//;
     return $url;
     }
 sub _build_url {
-    my $base_url = shift->config('url');
+    my $base_url = shift->base_url;
     return $base_url . 'api.asp';
     }
 sub _build_site_url {
-    my $base_url = shift->config('url');
+    my $base_url = shift->base_url;
     return $base_url . 'f/';
     }
 sub _build_email {
