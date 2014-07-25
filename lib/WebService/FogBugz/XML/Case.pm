@@ -70,6 +70,10 @@ has trello_order => (
     is        => 'rw',
     isa       => 'Str',
     );
+has trello_list => (
+    is        => 'rw',
+    isa       => 'Str',
+    );
 has events => (
     isa       => 'ArrayRef[WebService::FogBugz::XML::Event]',
     traits    => ['Array'],
@@ -128,6 +132,7 @@ sub populate_fields {
     $self->bz($dom->findvalue('//plugin_customfields_at_fogcreek_com_bugzillaa62'));
     $self->trello_id($dom->findvalue('//plugin_customfields_at_fogcreek_com_trelloxidp8d'));
     $self->trello_order($dom->findvalue('//plugin_customfields_at_fogcreek_com_trelloxorderb8e'));
+    $self->trello_list($dom->findvalue('//plugin_customfields_at_fogcreek_com_trelloxlistt7f'));
 
     foreach my $event_dom ($dom->findnodes('//events/event')){
         my $event = WebService::FogBugz::XML::Event->from_xml($event_dom);
@@ -142,6 +147,7 @@ sub update {
         ixBug   => $self->number,
         plugin_customfields_at_fogcreek_com_trelloxidp8d    => $self->trello_id,
         plugin_customfields_at_fogcreek_com_trelloxorderb8e => $self->trello_order,
+        plugin_customfields_at_fogcreek_com_trelloxlistt7f  => $self->trello_list,
         });
 
     return;
