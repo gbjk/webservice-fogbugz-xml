@@ -8,6 +8,20 @@ use Data::Dumper;
 
 has type => (is => 'rw', isa => 'Int');
 has text => (is => 'rw', isa => 'Str');
+has id   => (is => 'rw', isa => 'Int');
+has dom  => (is => 'rw');
+
+has _changes => (
+    is => 'rw',
+    isa => 'ArrayRef',
+    traits => ['Array'],
+    default => sub { [] },
+    handles => {
+        add_change => 'push',
+        changes    => 'elements',
+        },
+    );
+
 
 sub from_xml {
     my ($class, $dom) = @_;
@@ -15,7 +29,14 @@ sub from_xml {
     my $self = $class->new(
         type    => $dom->findvalue('evt'),
         text    => $dom->findvalue('s'),
+        id      => $dom->getAttribute('ixBugEvent'),
+        dom     => $dom,
         );
+
+    foreach my $change_dom ($dom->getElementsByTagName('sChanges')) {
+        $self->add_change( $change_dom->to_literal );
+        }
+
     return $self;
     }
 

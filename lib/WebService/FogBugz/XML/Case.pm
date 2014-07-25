@@ -114,6 +114,13 @@ sub get {
     return $self;
     }
 
+sub find_event_by_id {
+    my ($self, $id) = @_;
+
+    my ($event) =  grep {$_->id == $id} $self->events;
+    return $event;
+    }
+
 sub new_from_dom {
     my ($class, $dom) =@_;
 
