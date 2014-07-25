@@ -141,6 +141,17 @@ sub update {
     return;
     }
 
+sub add_comment {
+    my ($self, $comment) = @_;
+
+    my $dom = $self->get_url(edit => {
+        ixBug   => $self->number,
+        sEvent  => $comment,
+        });
+
+    return;
+    }
+
 sub start_work {
     my ($self) = @_;
 
