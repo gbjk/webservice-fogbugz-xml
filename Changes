@@ -1,3 +1,6 @@
+NEXT
+ - Support previous versions of config files with url params
+
 1.0101
  - Normalise url and site_url to just url
 
