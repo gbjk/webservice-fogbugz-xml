@@ -180,7 +180,7 @@ sub get_case {
 sub search {
     my ($self, %axis) = @_;
 
-    my $case_cols = 'tags,sTitle,sStatus,sCategory,hrsOrigEst,hrsCurrEst,hrsElapsed,ixBugParent,events,plugin_customfields';
+    my $case_cols = 'tags,sTitle,sStatus,sCategory,hrsOrigEst,hrsCurrEst,hrsElapsed,plugin_customfields_at_fogcreek_com_rto32,ixBugParent,events,plugin_customfields,dtLastOccurrence,sPersonAssignedTo,ixPersonAssignedTo';
 
     my $dom = $self->get_url(search => {
         q       => url_encode(join " ", map { my $key = $_ =~ s/_/x/rg;"$key:$axis{$_}" } keys %axis),
