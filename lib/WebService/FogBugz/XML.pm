@@ -10,6 +10,7 @@ use HTTP::Request;
 use IO::Prompt;
 use LWP::UserAgent;
 use WebService::FogBugz::XML::Case;
+use WebService::FogBugz::XML::Person;
 use XML::LibXML;
 use URL::Encode qw/url_encode/;
 
@@ -189,6 +190,19 @@ sub search {
     my @case_elems = $dom->getElementsByTagName('case');
     return map { WebService::FogBugz::XML::Case->new_from_dom($_) } @case_elems;
     }
+
+sub get_people {
+    my ($self) = @_;
+
+    my $dom = $self->get_url('listPeople');
+    my @people = ();
+    foreach my $person ($dom->getElementsByTagName('person')) {
+        push @people, WebService::FogBugz::XML::Person->new_from_dom($person);
+        }
+
+    return @people;
+    }
+
 
 sub get_url {
     my ($self, $cmd, $args, $tries) = @_;
