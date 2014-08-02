@@ -6,6 +6,7 @@ use v5.10;
 use namespace::autoclean;
 
 use WebService::FogBugz::XML::Event;
+use WebService::FogBugz::XML::Person;
 use DateTime;
 use DateTime::Format::Strptime;
 use Data::Dumper;
@@ -89,6 +90,10 @@ has events => (
         events       => 'elements',
         },
     );
+has assignee => (
+    isa       => 'WebService::FogBugz::XML::Person',
+    is        => 'rw'
+    );
 
 sub url {
     my ($self) = @_;
@@ -103,7 +108,7 @@ sub get {
         $self = $self->new(number => $number);
         }
 
-    my $case_cols = 'tags,sTitle,sStatus,sCategory,hrsOrigEst,hrsCurrEst,hrsElapsed,plugin_customfields_at_fogcreek_com_rto32,ixBugParent,events,plugin_customfields,dtLastOccurrence';
+    my $case_cols = 'tags,sTitle,sStatus,sCategory,hrsOrigEst,hrsCurrEst,hrsElapsed,plugin_customfields_at_fogcreek_com_rto32,ixBugParent,events,plugin_customfields,dtLastOccurrence,sPersonAssignedTo,ixPersonAssignedTo';
 
     my $dom = $self->get_url(search => {
         q       => $self->number,
@@ -146,6 +151,12 @@ sub populate_fields {
     $self->trello_id($dom->findvalue('//plugin_customfields_at_fogcreek_com_trelloxidp8d'));
     $self->trello_order($dom->findvalue('//plugin_customfields_at_fogcreek_com_trelloxorderb8e'));
     $self->trello_list($dom->findvalue('//plugin_customfields_at_fogcreek_com_trelloxlistt7f'));
+
+    my $assignee = WebService::FogBugz::XML::Person->new(
+        id        => $dom->findvalue('//case/ixPersonAssignedTo'),
+        full_name => $dom->findvalue('//sPersonAssignedTo'),
+        );
+    $self->assignee($assignee);
 
     if (my $last_occurrence = $dom->findvalue('//dtLastOccurrence')){
         state $date_parser = DateTime::Format::Strptime->new(pattern => "%FT%H:%M:%SZ");
