@@ -1,4 +1,4 @@
-NEXT
+1.0200
  - Support previous versions of config files with url params
  - Add get_people method
  - Add assignee attribute to Case
