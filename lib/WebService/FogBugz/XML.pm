@@ -10,6 +10,7 @@ use HTTP::Request;
 use IO::Prompt;
 use LWP::UserAgent;
 use WebService::FogBugz::XML::Case;
+use WebService::FogBugz::XML::Person;
 use XML::LibXML;
 use URL::Encode qw/url_encode/;
 
@@ -107,14 +108,16 @@ sub _build_base_url {
         $url = "".prompt "Fogbugz URL: ", '-t';
         }
 
+    # Support legacy config files which have the url as the api endpoint.
+    $url =~ s/api\.asp$//;
     return $url;
     }
 sub _build_url {
-    my $base_url = shift->config('url');
+    my $base_url = shift->base_url;
     return $base_url . 'api.asp';
     }
 sub _build_site_url {
-    my $base_url = shift->config('url');
+    my $base_url = shift->base_url;
     return $base_url . 'f/';
     }
 sub _build_email {
@@ -177,7 +180,7 @@ sub get_case {
 sub search {
     my ($self, %axis) = @_;
 
-    my $case_cols = 'tags,sTitle,sStatus,sCategory,hrsOrigEst,hrsCurrEst,hrsElapsed,ixBugParent,events,plugin_customfields';
+    my $case_cols = 'tags,sTitle,sStatus,sCategory,hrsOrigEst,hrsCurrEst,hrsElapsed,plugin_customfields_at_fogcreek_com_rto32,ixBugParent,events,plugin_customfields,dtLastOccurrence,sPersonAssignedTo,ixPersonAssignedTo';
 
     my $dom = $self->get_url(search => {
         q       => url_encode(join " ", map { my $key = $_ =~ s/_/x/rg;"$key:$axis{$_}" } keys %axis),
@@ -187,6 +190,19 @@ sub search {
     my @case_elems = $dom->getElementsByTagName('case');
     return map { WebService::FogBugz::XML::Case->new_from_dom($_) } @case_elems;
     }
+
+sub get_people {
+    my ($self) = @_;
+
+    my $dom = $self->get_url('listPeople');
+    my @people = ();
+    foreach my $person ($dom->getElementsByTagName('person')) {
+        push @people, WebService::FogBugz::XML::Person->new_from_dom($person);
+        }
+
+    return @people;
+    }
+
 
 sub get_url {
     my ($self, $cmd, $args, $tries) = @_;
